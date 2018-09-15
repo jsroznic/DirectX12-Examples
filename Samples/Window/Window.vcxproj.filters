@@ -20,10 +20,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Helpers.h">
+    <ClInclude Include="..\..\DX12Lib\d3dx12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="d3dx12.h">
+    <ClInclude Include="..\..\DX12Lib\Helpers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
