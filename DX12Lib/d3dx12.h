@@ -33,7 +33,8 @@ inline bool operator!=( const D3D12_VIEWPORT& l, const D3D12_VIEWPORT& r )
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RECT : public D3D12_RECT
 {
-    CD3DX12_RECT() = default;
+    CD3DX12_RECT()
+    {}
     explicit CD3DX12_RECT( const D3D12_RECT& o ) :
         D3D12_RECT( o )
     {}
@@ -49,12 +50,14 @@ struct CD3DX12_RECT : public D3D12_RECT
         bottom = Bottom;
     }
     ~CD3DX12_RECT() {}
+    operator const D3D12_RECT&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_VIEWPORT : public D3D12_VIEWPORT
 {
-    CD3DX12_VIEWPORT() = default;
+    CD3DX12_VIEWPORT()
+    {}
     explicit CD3DX12_VIEWPORT( const D3D12_VIEWPORT& o ) :
         D3D12_VIEWPORT( o )
     {}
@@ -112,12 +115,14 @@ struct CD3DX12_VIEWPORT : public D3D12_VIEWPORT
         MaxDepth = maxDepth;
     }
     ~CD3DX12_VIEWPORT() {}
+    operator const D3D12_VIEWPORT&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_BOX : public D3D12_BOX
 {
-    CD3DX12_BOX() = default;
+    CD3DX12_BOX()
+    {}
     explicit CD3DX12_BOX( const D3D12_BOX& o ) :
         D3D12_BOX( o )
     {}
@@ -161,6 +166,7 @@ struct CD3DX12_BOX : public D3D12_BOX
         back = Back;
     }
     ~CD3DX12_BOX() {}
+    operator const D3D12_BOX&() const { return *this; }
 };
 inline bool operator==( const D3D12_BOX& l, const D3D12_BOX& r )
 {
@@ -173,7 +179,8 @@ inline bool operator!=( const D3D12_BOX& l, const D3D12_BOX& r )
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_DEPTH_STENCIL_DESC : public D3D12_DEPTH_STENCIL_DESC
 {
-    CD3DX12_DEPTH_STENCIL_DESC() = default;
+    CD3DX12_DEPTH_STENCIL_DESC()
+    {}
     explicit CD3DX12_DEPTH_STENCIL_DESC( const D3D12_DEPTH_STENCIL_DESC& o ) :
         D3D12_DEPTH_STENCIL_DESC( o )
     {}
@@ -222,12 +229,14 @@ struct CD3DX12_DEPTH_STENCIL_DESC : public D3D12_DEPTH_STENCIL_DESC
         BackFace.StencilFunc = backStencilFunc;
     }
     ~CD3DX12_DEPTH_STENCIL_DESC() {}
+    operator const D3D12_DEPTH_STENCIL_DESC&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_DEPTH_STENCIL_DESC1 : public D3D12_DEPTH_STENCIL_DESC1
 {
-    CD3DX12_DEPTH_STENCIL_DESC1() = default;
+    CD3DX12_DEPTH_STENCIL_DESC1()
+    {}
     explicit CD3DX12_DEPTH_STENCIL_DESC1( const D3D12_DEPTH_STENCIL_DESC1& o ) :
         D3D12_DEPTH_STENCIL_DESC1( o )
     {}
@@ -297,7 +306,8 @@ struct CD3DX12_DEPTH_STENCIL_DESC1 : public D3D12_DEPTH_STENCIL_DESC1
         DepthBoundsTestEnable = depthBoundsTestEnable;
     }
     ~CD3DX12_DEPTH_STENCIL_DESC1() {}
-    operator D3D12_DEPTH_STENCIL_DESC() const
+    operator const D3D12_DEPTH_STENCIL_DESC1&() const { return *this; }
+    operator const D3D12_DEPTH_STENCIL_DESC() const
     {
         D3D12_DEPTH_STENCIL_DESC D;
         D.DepthEnable                  = DepthEnable;
@@ -321,7 +331,8 @@ struct CD3DX12_DEPTH_STENCIL_DESC1 : public D3D12_DEPTH_STENCIL_DESC1
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_BLEND_DESC : public D3D12_BLEND_DESC
 {
-    CD3DX12_BLEND_DESC() = default;
+    CD3DX12_BLEND_DESC()
+    {}
     explicit CD3DX12_BLEND_DESC( const D3D12_BLEND_DESC& o ) :
         D3D12_BLEND_DESC( o )
     {}
@@ -341,12 +352,14 @@ struct CD3DX12_BLEND_DESC : public D3D12_BLEND_DESC
             RenderTarget[ i ] = defaultRenderTargetBlendDesc;
     }
     ~CD3DX12_BLEND_DESC() {}
+    operator const D3D12_BLEND_DESC&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RASTERIZER_DESC : public D3D12_RASTERIZER_DESC
 {
-    CD3DX12_RASTERIZER_DESC() = default;
+    CD3DX12_RASTERIZER_DESC()
+    {}
     explicit CD3DX12_RASTERIZER_DESC( const D3D12_RASTERIZER_DESC& o ) :
         D3D12_RASTERIZER_DESC( o )
     {}
@@ -390,12 +403,14 @@ struct CD3DX12_RASTERIZER_DESC : public D3D12_RASTERIZER_DESC
         ConservativeRaster = conservativeRaster;
     }
     ~CD3DX12_RASTERIZER_DESC() {}
+    operator const D3D12_RASTERIZER_DESC&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RESOURCE_ALLOCATION_INFO : public D3D12_RESOURCE_ALLOCATION_INFO
 {
-    CD3DX12_RESOURCE_ALLOCATION_INFO() = default;
+    CD3DX12_RESOURCE_ALLOCATION_INFO()
+    {}
     explicit CD3DX12_RESOURCE_ALLOCATION_INFO( const D3D12_RESOURCE_ALLOCATION_INFO& o ) :
         D3D12_RESOURCE_ALLOCATION_INFO( o )
     {}
@@ -406,12 +421,14 @@ struct CD3DX12_RESOURCE_ALLOCATION_INFO : public D3D12_RESOURCE_ALLOCATION_INFO
         SizeInBytes = size;
         Alignment = alignment;
     }
+    operator const D3D12_RESOURCE_ALLOCATION_INFO&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_HEAP_PROPERTIES : public D3D12_HEAP_PROPERTIES
 {
-    CD3DX12_HEAP_PROPERTIES() = default;
+    CD3DX12_HEAP_PROPERTIES()
+    {}
     explicit CD3DX12_HEAP_PROPERTIES(const D3D12_HEAP_PROPERTIES &o) :
         D3D12_HEAP_PROPERTIES(o)
     {}
@@ -438,6 +455,7 @@ struct CD3DX12_HEAP_PROPERTIES : public D3D12_HEAP_PROPERTIES
         CreationNodeMask = creationNodeMask;
         VisibleNodeMask = nodeMask;
     }
+    operator const D3D12_HEAP_PROPERTIES&() const { return *this; }
     bool IsCPUAccessible() const
     {
         return Type == D3D12_HEAP_TYPE_UPLOAD || Type == D3D12_HEAP_TYPE_READBACK || (Type == D3D12_HEAP_TYPE_CUSTOM &&
@@ -457,7 +475,8 @@ inline bool operator!=( const D3D12_HEAP_PROPERTIES& l, const D3D12_HEAP_PROPERT
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_HEAP_DESC : public D3D12_HEAP_DESC
 {
-    CD3DX12_HEAP_DESC() = default;
+    CD3DX12_HEAP_DESC()
+    {}
     explicit CD3DX12_HEAP_DESC(const D3D12_HEAP_DESC &o) :
         D3D12_HEAP_DESC(o)
     {}
@@ -526,6 +545,7 @@ struct CD3DX12_HEAP_DESC : public D3D12_HEAP_DESC
         Alignment = resAllocInfo.Alignment;
         Flags = flags;
     }
+    operator const D3D12_HEAP_DESC&() const { return *this; }
     bool IsCPUAccessible() const
     { return static_cast< const CD3DX12_HEAP_PROPERTIES* >( &Properties )->IsCPUAccessible(); }
 };
@@ -542,7 +562,8 @@ inline bool operator!=( const D3D12_HEAP_DESC& l, const D3D12_HEAP_DESC& r )
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_CLEAR_VALUE : public D3D12_CLEAR_VALUE
 {
-    CD3DX12_CLEAR_VALUE() = default;
+    CD3DX12_CLEAR_VALUE()
+    {}
     explicit CD3DX12_CLEAR_VALUE(const D3D12_CLEAR_VALUE &o) :
         D3D12_CLEAR_VALUE(o)
     {}
@@ -563,12 +584,14 @@ struct CD3DX12_CLEAR_VALUE : public D3D12_CLEAR_VALUE
         memcpy( &DepthStencil.Depth, &depth, sizeof( depth ) );
         DepthStencil.Stencil = stencil;
     }
+    operator const D3D12_CLEAR_VALUE&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RANGE : public D3D12_RANGE
 {
-    CD3DX12_RANGE() = default;
+    CD3DX12_RANGE()
+    {}
     explicit CD3DX12_RANGE(const D3D12_RANGE &o) :
         D3D12_RANGE(o)
     {}
@@ -579,12 +602,14 @@ struct CD3DX12_RANGE : public D3D12_RANGE
         Begin = begin;
         End = end;
     }
+    operator const D3D12_RANGE&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RANGE_UINT64 : public D3D12_RANGE_UINT64
 {
-    CD3DX12_RANGE_UINT64() = default;
+    CD3DX12_RANGE_UINT64()
+    {}
     explicit CD3DX12_RANGE_UINT64(const D3D12_RANGE_UINT64 &o) :
         D3D12_RANGE_UINT64(o)
     {}
@@ -595,12 +620,14 @@ struct CD3DX12_RANGE_UINT64 : public D3D12_RANGE_UINT64
         Begin = begin;
         End = end;
     }
+    operator const D3D12_RANGE_UINT64&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_SUBRESOURCE_RANGE_UINT64 : public D3D12_SUBRESOURCE_RANGE_UINT64
 {
-    CD3DX12_SUBRESOURCE_RANGE_UINT64() = default;
+    CD3DX12_SUBRESOURCE_RANGE_UINT64()
+    {}
     explicit CD3DX12_SUBRESOURCE_RANGE_UINT64(const D3D12_SUBRESOURCE_RANGE_UINT64 &o) :
         D3D12_SUBRESOURCE_RANGE_UINT64(o)
     {}
@@ -620,12 +647,14 @@ struct CD3DX12_SUBRESOURCE_RANGE_UINT64 : public D3D12_SUBRESOURCE_RANGE_UINT64
         Range.Begin = begin;
         Range.End = end;
     }
+    operator const D3D12_SUBRESOURCE_RANGE_UINT64&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_SHADER_BYTECODE : public D3D12_SHADER_BYTECODE
 {
-    CD3DX12_SHADER_BYTECODE() = default;
+    CD3DX12_SHADER_BYTECODE()
+    {}
     explicit CD3DX12_SHADER_BYTECODE(const D3D12_SHADER_BYTECODE &o) :
         D3D12_SHADER_BYTECODE(o)
     {}
@@ -642,12 +671,14 @@ struct CD3DX12_SHADER_BYTECODE : public D3D12_SHADER_BYTECODE
         pShaderBytecode = _pShaderBytecode;
         BytecodeLength = bytecodeLength;
     }
+    operator const D3D12_SHADER_BYTECODE&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_TILED_RESOURCE_COORDINATE : public D3D12_TILED_RESOURCE_COORDINATE
 {
-    CD3DX12_TILED_RESOURCE_COORDINATE() = default;
+    CD3DX12_TILED_RESOURCE_COORDINATE()
+    {}
     explicit CD3DX12_TILED_RESOURCE_COORDINATE(const D3D12_TILED_RESOURCE_COORDINATE &o) :
         D3D12_TILED_RESOURCE_COORDINATE(o)
     {}
@@ -662,12 +693,14 @@ struct CD3DX12_TILED_RESOURCE_COORDINATE : public D3D12_TILED_RESOURCE_COORDINAT
         Z = z;
         Subresource = subresource;
     }
+    operator const D3D12_TILED_RESOURCE_COORDINATE&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_TILE_REGION_SIZE : public D3D12_TILE_REGION_SIZE
 {
-    CD3DX12_TILE_REGION_SIZE() = default;
+    CD3DX12_TILE_REGION_SIZE()
+    {}
     explicit CD3DX12_TILE_REGION_SIZE(const D3D12_TILE_REGION_SIZE &o) :
         D3D12_TILE_REGION_SIZE(o)
     {}
@@ -684,12 +717,14 @@ struct CD3DX12_TILE_REGION_SIZE : public D3D12_TILE_REGION_SIZE
         Height = height;
         Depth = depth;
     }
+    operator const D3D12_TILE_REGION_SIZE&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_SUBRESOURCE_TILING : public D3D12_SUBRESOURCE_TILING
 {
-    CD3DX12_SUBRESOURCE_TILING() = default;
+    CD3DX12_SUBRESOURCE_TILING()
+    {}
     explicit CD3DX12_SUBRESOURCE_TILING(const D3D12_SUBRESOURCE_TILING &o) :
         D3D12_SUBRESOURCE_TILING(o)
     {}
@@ -704,12 +739,14 @@ struct CD3DX12_SUBRESOURCE_TILING : public D3D12_SUBRESOURCE_TILING
         DepthInTiles = depthInTiles;
         StartTileIndexInOverallResource = startTileIndexInOverallResource;
     }
+    operator const D3D12_SUBRESOURCE_TILING&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_TILE_SHAPE : public D3D12_TILE_SHAPE
 {
-    CD3DX12_TILE_SHAPE() = default;
+    CD3DX12_TILE_SHAPE()
+    {}
     explicit CD3DX12_TILE_SHAPE(const D3D12_TILE_SHAPE &o) :
         D3D12_TILE_SHAPE(o)
     {}
@@ -722,12 +759,14 @@ struct CD3DX12_TILE_SHAPE : public D3D12_TILE_SHAPE
         HeightInTexels = heightInTexels;
         DepthInTexels = depthInTexels;
     }
+    operator const D3D12_TILE_SHAPE&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RESOURCE_BARRIER : public D3D12_RESOURCE_BARRIER
 {
-    CD3DX12_RESOURCE_BARRIER() = default;
+    CD3DX12_RESOURCE_BARRIER()
+    {}
     explicit CD3DX12_RESOURCE_BARRIER(const D3D12_RESOURCE_BARRIER &o) :
         D3D12_RESOURCE_BARRIER(o)
     {}
@@ -771,12 +810,14 @@ struct CD3DX12_RESOURCE_BARRIER : public D3D12_RESOURCE_BARRIER
         barrier.UAV.pResource = pResource;
         return result;
     }
+    operator const D3D12_RESOURCE_BARRIER&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_PACKED_MIP_INFO : public D3D12_PACKED_MIP_INFO
 {
-    CD3DX12_PACKED_MIP_INFO() = default;
+    CD3DX12_PACKED_MIP_INFO()
+    {}
     explicit CD3DX12_PACKED_MIP_INFO(const D3D12_PACKED_MIP_INFO &o) :
         D3D12_PACKED_MIP_INFO(o)
     {}
@@ -791,12 +832,14 @@ struct CD3DX12_PACKED_MIP_INFO : public D3D12_PACKED_MIP_INFO
         NumTilesForPackedMips = numTilesForPackedMips;
         StartTileIndexInOverallResource = startTileIndexInOverallResource;
     }
+    operator const D3D12_PACKED_MIP_INFO&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_SUBRESOURCE_FOOTPRINT : public D3D12_SUBRESOURCE_FOOTPRINT
 {
-    CD3DX12_SUBRESOURCE_FOOTPRINT() = default;
+    CD3DX12_SUBRESOURCE_FOOTPRINT()
+    {}
     explicit CD3DX12_SUBRESOURCE_FOOTPRINT(const D3D12_SUBRESOURCE_FOOTPRINT &o) :
         D3D12_SUBRESOURCE_FOOTPRINT(o)
     {}
@@ -823,12 +866,14 @@ struct CD3DX12_SUBRESOURCE_FOOTPRINT : public D3D12_SUBRESOURCE_FOOTPRINT
         Depth = (resDesc.Dimension == D3D12_RESOURCE_DIMENSION_TEXTURE3D ? resDesc.DepthOrArraySize : 1);
         RowPitch = rowPitch;
     }
+    operator const D3D12_SUBRESOURCE_FOOTPRINT&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_TEXTURE_COPY_LOCATION : public D3D12_TEXTURE_COPY_LOCATION
 { 
-    CD3DX12_TEXTURE_COPY_LOCATION() = default;
+    CD3DX12_TEXTURE_COPY_LOCATION()
+    {}
     explicit CD3DX12_TEXTURE_COPY_LOCATION(const D3D12_TEXTURE_COPY_LOCATION &o) :
         D3D12_TEXTURE_COPY_LOCATION(o)
     {}
@@ -850,7 +895,7 @@ struct CD3DX12_TEXTURE_COPY_LOCATION : public D3D12_TEXTURE_COPY_LOCATION
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_DESCRIPTOR_RANGE : public D3D12_DESCRIPTOR_RANGE
 {
-    CD3DX12_DESCRIPTOR_RANGE() = default;
+    CD3DX12_DESCRIPTOR_RANGE() { }
     explicit CD3DX12_DESCRIPTOR_RANGE(const D3D12_DESCRIPTOR_RANGE &o) :
         D3D12_DESCRIPTOR_RANGE(o)
     {}
@@ -896,7 +941,7 @@ struct CD3DX12_DESCRIPTOR_RANGE : public D3D12_DESCRIPTOR_RANGE
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_DESCRIPTOR_TABLE : public D3D12_ROOT_DESCRIPTOR_TABLE
 {
-    CD3DX12_ROOT_DESCRIPTOR_TABLE() = default;
+    CD3DX12_ROOT_DESCRIPTOR_TABLE() {}
     explicit CD3DX12_ROOT_DESCRIPTOR_TABLE(const D3D12_ROOT_DESCRIPTOR_TABLE &o) :
         D3D12_ROOT_DESCRIPTOR_TABLE(o)
     {}
@@ -927,7 +972,7 @@ struct CD3DX12_ROOT_DESCRIPTOR_TABLE : public D3D12_ROOT_DESCRIPTOR_TABLE
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_CONSTANTS : public D3D12_ROOT_CONSTANTS
 {
-    CD3DX12_ROOT_CONSTANTS() = default;
+    CD3DX12_ROOT_CONSTANTS() {}
     explicit CD3DX12_ROOT_CONSTANTS(const D3D12_ROOT_CONSTANTS &o) :
         D3D12_ROOT_CONSTANTS(o)
     {}
@@ -962,7 +1007,7 @@ struct CD3DX12_ROOT_CONSTANTS : public D3D12_ROOT_CONSTANTS
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_DESCRIPTOR : public D3D12_ROOT_DESCRIPTOR
 {
-    CD3DX12_ROOT_DESCRIPTOR() = default;
+    CD3DX12_ROOT_DESCRIPTOR() {}
     explicit CD3DX12_ROOT_DESCRIPTOR(const D3D12_ROOT_DESCRIPTOR &o) :
         D3D12_ROOT_DESCRIPTOR(o)
     {}
@@ -990,7 +1035,7 @@ struct CD3DX12_ROOT_DESCRIPTOR : public D3D12_ROOT_DESCRIPTOR
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_PARAMETER : public D3D12_ROOT_PARAMETER
 {
-    CD3DX12_ROOT_PARAMETER() = default;
+    CD3DX12_ROOT_PARAMETER() {}
     explicit CD3DX12_ROOT_PARAMETER(const D3D12_ROOT_PARAMETER &o) :
         D3D12_ROOT_PARAMETER(o)
     {}
@@ -1096,7 +1141,7 @@ struct CD3DX12_ROOT_PARAMETER : public D3D12_ROOT_PARAMETER
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_STATIC_SAMPLER_DESC : public D3D12_STATIC_SAMPLER_DESC
 {
-    CD3DX12_STATIC_SAMPLER_DESC() = default;
+    CD3DX12_STATIC_SAMPLER_DESC() {}
     explicit CD3DX12_STATIC_SAMPLER_DESC(const D3D12_STATIC_SAMPLER_DESC &o) :
         D3D12_STATIC_SAMPLER_DESC(o)
     {}
@@ -1198,7 +1243,7 @@ struct CD3DX12_STATIC_SAMPLER_DESC : public D3D12_STATIC_SAMPLER_DESC
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_SIGNATURE_DESC : public D3D12_ROOT_SIGNATURE_DESC
 {
-    CD3DX12_ROOT_SIGNATURE_DESC() = default;
+    CD3DX12_ROOT_SIGNATURE_DESC() {}
     explicit CD3DX12_ROOT_SIGNATURE_DESC(const D3D12_ROOT_SIGNATURE_DESC &o) :
         D3D12_ROOT_SIGNATURE_DESC(o)
     {}
@@ -1245,7 +1290,7 @@ struct CD3DX12_ROOT_SIGNATURE_DESC : public D3D12_ROOT_SIGNATURE_DESC
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_DESCRIPTOR_RANGE1 : public D3D12_DESCRIPTOR_RANGE1
 {
-    CD3DX12_DESCRIPTOR_RANGE1() = default;
+    CD3DX12_DESCRIPTOR_RANGE1() { }
     explicit CD3DX12_DESCRIPTOR_RANGE1(const D3D12_DESCRIPTOR_RANGE1 &o) :
         D3D12_DESCRIPTOR_RANGE1(o)
     {}
@@ -1295,7 +1340,7 @@ struct CD3DX12_DESCRIPTOR_RANGE1 : public D3D12_DESCRIPTOR_RANGE1
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_DESCRIPTOR_TABLE1 : public D3D12_ROOT_DESCRIPTOR_TABLE1
 {
-    CD3DX12_ROOT_DESCRIPTOR_TABLE1() = default;
+    CD3DX12_ROOT_DESCRIPTOR_TABLE1() {}
     explicit CD3DX12_ROOT_DESCRIPTOR_TABLE1(const D3D12_ROOT_DESCRIPTOR_TABLE1 &o) :
         D3D12_ROOT_DESCRIPTOR_TABLE1(o)
     {}
@@ -1326,7 +1371,7 @@ struct CD3DX12_ROOT_DESCRIPTOR_TABLE1 : public D3D12_ROOT_DESCRIPTOR_TABLE1
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_DESCRIPTOR1 : public D3D12_ROOT_DESCRIPTOR1
 {
-    CD3DX12_ROOT_DESCRIPTOR1() = default;
+    CD3DX12_ROOT_DESCRIPTOR1() {}
     explicit CD3DX12_ROOT_DESCRIPTOR1(const D3D12_ROOT_DESCRIPTOR1 &o) :
         D3D12_ROOT_DESCRIPTOR1(o)
     {}
@@ -1361,7 +1406,7 @@ struct CD3DX12_ROOT_DESCRIPTOR1 : public D3D12_ROOT_DESCRIPTOR1
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_ROOT_PARAMETER1 : public D3D12_ROOT_PARAMETER1
 {
-    CD3DX12_ROOT_PARAMETER1() = default;
+    CD3DX12_ROOT_PARAMETER1() {}
     explicit CD3DX12_ROOT_PARAMETER1(const D3D12_ROOT_PARAMETER1 &o) :
         D3D12_ROOT_PARAMETER1(o)
     {}
@@ -1473,7 +1518,7 @@ struct CD3DX12_ROOT_PARAMETER1 : public D3D12_ROOT_PARAMETER1
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC : public D3D12_VERSIONED_ROOT_SIGNATURE_DESC
 {
-    CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC() = default;
+    CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC() {}
     explicit CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC(const D3D12_VERSIONED_ROOT_SIGNATURE_DESC &o) :
         D3D12_VERSIONED_ROOT_SIGNATURE_DESC(o)
     {}
@@ -1566,7 +1611,7 @@ struct CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC : public D3D12_VERSIONED_ROOT_SIGNA
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_CPU_DESCRIPTOR_HANDLE : public D3D12_CPU_DESCRIPTOR_HANDLE
 {
-    CD3DX12_CPU_DESCRIPTOR_HANDLE() = default;
+    CD3DX12_CPU_DESCRIPTOR_HANDLE() {}
     explicit CD3DX12_CPU_DESCRIPTOR_HANDLE(const D3D12_CPU_DESCRIPTOR_HANDLE &o) :
         D3D12_CPU_DESCRIPTOR_HANDLE(o)
     {}
@@ -1581,7 +1626,7 @@ struct CD3DX12_CPU_DESCRIPTOR_HANDLE : public D3D12_CPU_DESCRIPTOR_HANDLE
     }
     CD3DX12_CPU_DESCRIPTOR_HANDLE& Offset(INT offsetInDescriptors, UINT descriptorIncrementSize)
     { 
-        ptr += INT64(offsetInDescriptors) * UINT64(descriptorIncrementSize);
+        ptr += offsetInDescriptors * descriptorIncrementSize;
         return *this;
     }
     CD3DX12_CPU_DESCRIPTOR_HANDLE& Offset(INT offsetScaledByIncrementSize) 
@@ -1602,7 +1647,7 @@ struct CD3DX12_CPU_DESCRIPTOR_HANDLE : public D3D12_CPU_DESCRIPTOR_HANDLE
         ptr = other.ptr;
         return *this;
     }
-
+    
     inline void InitOffsetted(_In_ const D3D12_CPU_DESCRIPTOR_HANDLE &base, INT offsetScaledByIncrementSize)
     {
         InitOffsetted(*this, base, offsetScaledByIncrementSize);
@@ -1620,14 +1665,14 @@ struct CD3DX12_CPU_DESCRIPTOR_HANDLE : public D3D12_CPU_DESCRIPTOR_HANDLE
     
     static inline void InitOffsetted(_Out_ D3D12_CPU_DESCRIPTOR_HANDLE &handle, _In_ const D3D12_CPU_DESCRIPTOR_HANDLE &base, INT offsetInDescriptors, UINT descriptorIncrementSize)
     {
-        handle.ptr = base.ptr + INT64(offsetInDescriptors) * UINT64(descriptorIncrementSize);
+        handle.ptr = base.ptr + offsetInDescriptors * descriptorIncrementSize;
     }
 };
 
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_GPU_DESCRIPTOR_HANDLE : public D3D12_GPU_DESCRIPTOR_HANDLE
 {
-    CD3DX12_GPU_DESCRIPTOR_HANDLE() = default;
+    CD3DX12_GPU_DESCRIPTOR_HANDLE() {}
     explicit CD3DX12_GPU_DESCRIPTOR_HANDLE(const D3D12_GPU_DESCRIPTOR_HANDLE &o) :
         D3D12_GPU_DESCRIPTOR_HANDLE(o)
     {}
@@ -1642,7 +1687,7 @@ struct CD3DX12_GPU_DESCRIPTOR_HANDLE : public D3D12_GPU_DESCRIPTOR_HANDLE
     }
     CD3DX12_GPU_DESCRIPTOR_HANDLE& Offset(INT offsetInDescriptors, UINT descriptorIncrementSize)
     { 
-        ptr += INT64(offsetInDescriptors) * UINT64(descriptorIncrementSize);
+        ptr += offsetInDescriptors * descriptorIncrementSize;
         return *this;
     }
     CD3DX12_GPU_DESCRIPTOR_HANDLE& Offset(INT offsetScaledByIncrementSize) 
@@ -1663,7 +1708,7 @@ struct CD3DX12_GPU_DESCRIPTOR_HANDLE : public D3D12_GPU_DESCRIPTOR_HANDLE
         ptr = other.ptr;
         return *this;
     }
-
+    
     inline void InitOffsetted(_In_ const D3D12_GPU_DESCRIPTOR_HANDLE &base, INT offsetScaledByIncrementSize)
     {
         InitOffsetted(*this, base, offsetScaledByIncrementSize);
@@ -1681,7 +1726,7 @@ struct CD3DX12_GPU_DESCRIPTOR_HANDLE : public D3D12_GPU_DESCRIPTOR_HANDLE
     
     static inline void InitOffsetted(_Out_ D3D12_GPU_DESCRIPTOR_HANDLE &handle, _In_ const D3D12_GPU_DESCRIPTOR_HANDLE &base, INT offsetInDescriptors, UINT descriptorIncrementSize)
     {
-        handle.ptr = base.ptr + INT64(offsetInDescriptors) * UINT64(descriptorIncrementSize);
+        handle.ptr = base.ptr + offsetInDescriptors * descriptorIncrementSize;
     }
 };
 
@@ -1717,7 +1762,8 @@ inline UINT8 D3D12GetFormatPlaneCount(
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RESOURCE_DESC : public D3D12_RESOURCE_DESC
 {
-    CD3DX12_RESOURCE_DESC() = default;
+    CD3DX12_RESOURCE_DESC()
+    {}
     explicit CD3DX12_RESOURCE_DESC( const D3D12_RESOURCE_DESC& o ) :
         D3D12_RESOURCE_DESC( o )
     {}
@@ -1811,6 +1857,7 @@ struct CD3DX12_RESOURCE_DESC : public D3D12_RESOURCE_DESC
     { return MipLevels * ArraySize() * PlaneCount(pDevice); }
     inline UINT CalcSubresource(UINT MipSlice, UINT ArraySlice, UINT PlaneSlice)
     { return D3D12CalcSubresource(MipSlice, ArraySlice, PlaneSlice, MipLevels, ArraySize()); }
+    operator const D3D12_RESOURCE_DESC&() const { return *this; }
 };
 inline bool operator==( const D3D12_RESOURCE_DESC& l, const D3D12_RESOURCE_DESC& r )
 {
@@ -1832,7 +1879,8 @@ inline bool operator!=( const D3D12_RESOURCE_DESC& l, const D3D12_RESOURCE_DESC&
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_VIEW_INSTANCING_DESC : public D3D12_VIEW_INSTANCING_DESC
 {
-    CD3DX12_VIEW_INSTANCING_DESC() = default;
+    CD3DX12_VIEW_INSTANCING_DESC()
+    {}
     explicit CD3DX12_VIEW_INSTANCING_DESC( const D3D12_VIEW_INSTANCING_DESC& o ) :
         D3D12_VIEW_INSTANCING_DESC( o )
     {}
@@ -1852,6 +1900,7 @@ struct CD3DX12_VIEW_INSTANCING_DESC : public D3D12_VIEW_INSTANCING_DESC
         Flags = InFlags;
     }
     ~CD3DX12_VIEW_INSTANCING_DESC() {}
+    operator const D3D12_VIEW_INSTANCING_DESC&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
@@ -1930,7 +1979,7 @@ inline UINT64 UpdateSubresources(
     for (UINT i = 0; i < NumSubresources; ++i)
     {
         if (pRowSizesInBytes[i] > (SIZE_T)-1) return 0;
-        D3D12_MEMCPY_DEST DestData = { pData + pLayouts[i].Offset, pLayouts[i].Footprint.RowPitch, SIZE_T(pLayouts[i].Footprint.RowPitch) * SIZE_T(pNumRows[i]) };
+        D3D12_MEMCPY_DEST DestData = { pData + pLayouts[i].Offset, pLayouts[i].Footprint.RowPitch, pLayouts[i].Footprint.RowPitch * pNumRows[i] };
         MemcpySubresource(&DestData, &pSrcData[i], (SIZE_T)pRowSizesInBytes[i], pNumRows[i], pLayouts[i].Footprint.Depth);
     }
     pIntermediate->Unmap(0, NULL);
@@ -2153,7 +2202,7 @@ inline HRESULT D3DX12SerializeVersionedRootSignature(
 //------------------------------------------------------------------------------------------------
 struct CD3DX12_RT_FORMAT_ARRAY : public D3D12_RT_FORMAT_ARRAY
 {
-    CD3DX12_RT_FORMAT_ARRAY() = default;
+    CD3DX12_RT_FORMAT_ARRAY() {}
     explicit CD3DX12_RT_FORMAT_ARRAY(const D3D12_RT_FORMAT_ARRAY& o)
         : D3D12_RT_FORMAT_ARRAY(o)
     {}
@@ -2163,6 +2212,7 @@ struct CD3DX12_RT_FORMAT_ARRAY : public D3D12_RT_FORMAT_ARRAY
         memcpy(RTFormats, pFormats, sizeof(RTFormats));
         // assumes ARRAY_SIZE(pFormats) == ARRAY_SIZE(RTFormats)
     }
+    operator const D3D12_RT_FORMAT_ARRAY&() const { return *this; }
 };
 
 //------------------------------------------------------------------------------------------------
@@ -2182,7 +2232,7 @@ private:
     D3D12_PIPELINE_STATE_SUBOBJECT_TYPE _Type;
     InnerStructType _Inner;
 public:
-    CD3DX12_PIPELINE_STATE_STREAM_SUBOBJECT() noexcept : _Type(Type), _Inner(DefaultArg()) {}
+    CD3DX12_PIPELINE_STATE_STREAM_SUBOBJECT() : _Type(Type), _Inner(DefaultArg()) {}
     CD3DX12_PIPELINE_STATE_STREAM_SUBOBJECT(InnerStructType const& i) : _Type(Type), _Inner(i) {}
     CD3DX12_PIPELINE_STATE_STREAM_SUBOBJECT& operator=(InnerStructType const& i) { _Inner = i; return *this; }
     operator InnerStructType() const { return _Inner; }
@@ -2253,7 +2303,7 @@ struct ID3DX12PipelineParserCallbacks
 // Use CD3DX12_PIPELINE_STATE_STREAM for RS2+ support.
 struct CD3DX12_PIPELINE_STATE_STREAM1
 {
-    CD3DX12_PIPELINE_STATE_STREAM1() = default;
+    CD3DX12_PIPELINE_STATE_STREAM1() {}
     CD3DX12_PIPELINE_STATE_STREAM1(const D3D12_GRAPHICS_PIPELINE_STATE_DESC& Desc)
         : Flags(Desc.Flags)
         , NodeMask(Desc.NodeMask)
@@ -2283,9 +2333,7 @@ struct CD3DX12_PIPELINE_STATE_STREAM1
         , pRootSignature(Desc.pRootSignature)
         , CS(CD3DX12_SHADER_BYTECODE(Desc.CS))
         , CachedPSO(Desc.CachedPSO)
-    {
-        static_cast<D3D12_DEPTH_STENCIL_DESC1&>(DepthStencilState).DepthEnable = false;
-    }
+    {}
     CD3DX12_PIPELINE_STATE_STREAM_FLAGS Flags;
     CD3DX12_PIPELINE_STATE_STREAM_NODE_MASK NodeMask;
     CD3DX12_PIPELINE_STATE_STREAM_ROOT_SIGNATURE pRootSignature;
@@ -2350,7 +2398,7 @@ struct CD3DX12_PIPELINE_STATE_STREAM1
 // See CD3DX12_PIPELINE_STATE_STREAM1 for instance.
 struct CD3DX12_PIPELINE_STATE_STREAM
 {
-    CD3DX12_PIPELINE_STATE_STREAM() = default;
+    CD3DX12_PIPELINE_STATE_STREAM() {}
     CD3DX12_PIPELINE_STATE_STREAM(const D3D12_GRAPHICS_PIPELINE_STATE_DESC& Desc)
         : Flags(Desc.Flags)
         , NodeMask(Desc.NodeMask)
@@ -2442,7 +2490,7 @@ struct CD3DX12_PIPELINE_STATE_STREAM
 struct CD3DX12_PIPELINE_STATE_STREAM_PARSE_HELPER : public ID3DX12PipelineParserCallbacks
 {
     CD3DX12_PIPELINE_STATE_STREAM1 PipelineStream;
-    CD3DX12_PIPELINE_STATE_STREAM_PARSE_HELPER() noexcept
+    CD3DX12_PIPELINE_STATE_STREAM_PARSE_HELPER()
         : SeenDSS(false)
     {
         // Adjust defaults to account for absent members.
@@ -2451,7 +2499,6 @@ struct CD3DX12_PIPELINE_STATE_STREAM_PARSE_HELPER : public ID3DX12PipelineParser
         // Depth disabled if no DSV format specified.
         static_cast<D3D12_DEPTH_STENCIL_DESC1&>(PipelineStream.DepthStencilState).DepthEnable = false;
     }
-    virtual ~CD3DX12_PIPELINE_STATE_STREAM_PARSE_HELPER() {}
 
     // ID3DX12PipelineParserCallbacks
     void FlagsCb(D3D12_PIPELINE_STATE_FLAGS Flags) {PipelineStream.Flags = Flags;}
@@ -2514,18 +2561,19 @@ inline D3D12_PIPELINE_STATE_SUBOBJECT_TYPE D3DX12GetBaseSubobjectType(D3D12_PIPE
 
 inline HRESULT D3DX12ParsePipelineStream(const D3D12_PIPELINE_STATE_STREAM_DESC& Desc, ID3DX12PipelineParserCallbacks* pCallbacks)
 {
-    if (pCallbacks == nullptr)
-    {
-        return E_INVALIDARG;
-    }
-
     if (Desc.SizeInBytes == 0 || Desc.pPipelineStateSubobjectStream == nullptr)
     {
         pCallbacks->ErrorBadInputParameter(1); // first parameter issue
         return E_INVALIDARG;
     }
 
-    bool SubobjectSeen[D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MAX_VALID] = {};
+    if (pCallbacks == nullptr)
+    {
+        pCallbacks->ErrorBadInputParameter(2); // second parameter issue
+        return E_INVALIDARG;
+    }
+
+    bool SubobjectSeen[D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_MAX_VALID] = {0};
     for (SIZE_T CurOffset = 0, SizeOfSubobject = 0; CurOffset < Desc.SizeInBytes; CurOffset += SizeOfSubobject)
     {
         BYTE* pStream = static_cast<BYTE*>(Desc.pPipelineStateSubobjectStream)+CurOffset;

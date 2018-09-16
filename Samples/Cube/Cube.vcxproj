@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -20,8 +20,8 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
-    <ProjectGuid>{BBE5F399-F7EC-493B-8827-C2D289548E5E}</ProjectGuid>
-    <RootNamespace>Window</RootNamespace>
+    <ProjectGuid>{E8DF7CEB-F317-454A-B378-70C1B1B831A4}</ProjectGuid>
+    <RootNamespace>Cube</RootNamespace>
     <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -70,10 +70,10 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\Jimmy\source\repos\DX12-Examples\DX12Lib;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Jimmy\source\repos\DX12-Examples\Samples\Cube;C:\Users\Jimmy\source\repos\DX12-Examples\DX12Lib;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>C:\Users\Jimmy\source\repos\DX12-Examples\DX12Lib;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\Jimmy\source\repos\DX12-Examples\DX12Lib;C:\Users\Jimmy\source\repos\DX12-Examples\Samples\Cube;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -82,11 +82,12 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
-    <Link />
-    <Link />
     <Link>
-      <AdditionalDependencies>D3d12.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3d12.lib;DXGI.lib;D3Dcompiler.lib;shlwapi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderModel>5.1</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -95,8 +96,11 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
+    <FxCompile>
+      <ShaderModel>5.1</ShaderModel>
+    </FxCompile>
     <Link>
-      <AdditionalDependencies>D3d12.lib;DXGI.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>D3d12.lib;DXGI.lib;D3Dcompiler.lib;shlwapi.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -128,11 +132,38 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\DX12Lib\Application.h" />
+    <ClInclude Include="..\..\DX12Lib\CommandQueue.h" />
+    <ClInclude Include="..\..\DX12Lib\d3dx12.h" />
+    <ClInclude Include="..\..\DX12Lib\DX12LibPCH.h" />
+    <ClInclude Include="..\..\DX12Lib\Events.h" />
+    <ClInclude Include="..\..\DX12Lib\Game.h" />
+    <ClInclude Include="..\..\DX12Lib\Helpers.h" />
+    <ClInclude Include="..\..\DX12Lib\HighResolutionClock.h" />
+    <ClInclude Include="..\..\DX12Lib\KeyCodes.h" />
+    <ClInclude Include="..\..\DX12Lib\resource.h" />
+    <ClInclude Include="..\..\DX12Lib\Window.h" />
+    <ClInclude Include="Cube.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\DX12Lib\Application.cpp" />
+    <ClCompile Include="..\..\DX12Lib\CommandQueue.cpp" />
+    <ClCompile Include="..\..\DX12Lib\DX12LibPCH.cpp" />
+    <ClCompile Include="..\..\DX12Lib\Game.cpp" />
+    <ClCompile Include="..\..\DX12Lib\HighResolutionClock.cpp" />
+    <ClCompile Include="..\..\DX12Lib\Window.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\DX12Lib\d3dx12.h" />
-    <ClInclude Include="..\..\DX12Lib\Helpers.h" />
+    <FxCompile Include="PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="VertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
