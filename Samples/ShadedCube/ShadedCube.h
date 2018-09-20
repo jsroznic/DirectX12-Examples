@@ -42,6 +42,16 @@ protected:
 	 */
 	virtual void OnMouseWheel(MouseWheelEventArgs& e) override;
 
+	/**
+	 * Invoked when the mouse wheel is scrolled while the registered window has focus.
+	 */
+	virtual void OnMouseMoved(MouseMotionEventArgs& e) override;
+
+	/**
+	 * Updated the current state of selected Keyboard/Mouse Inputs
+	 */
+	virtual void UpdateKeyPresses();
+
 
 	virtual void OnResize(ResizeEventArgs& e) override;
 private:
@@ -97,6 +107,32 @@ private:
 	DirectX::XMMATRIX m_ModelMatrix;
 	DirectX::XMMATRIX m_ViewMatrix;
 	DirectX::XMMATRIX m_ProjectionMatrix;
+
+	DirectX::XMVECTOR m_eyePosition;
+	DirectX::XMVECTOR m_focusPoint;
+	DirectX::XMVECTOR m_upDirection;
+
+	// Mouse Click Inputs
+	bool m_mouseLClick = false;
+	bool m_mouseRClick = false;
+
+	// Absolute Mouse Position
+	float m_mouseX = 0;
+	float m_mouseY = 0;
+
+	// Camera Rotation
+	float m_camRotX = 0;
+	float m_camRotY = 0;
+
+	// Camera Movement
+	// [0] Forward
+	// [1] Backward
+	// [2] Right
+	// [3] Left
+	// [4] Up
+	// [5] Down
+	float m_movement[6] = { 0 };
+	bool m_boost = false;
 
 	bool m_ContentLoaded;
 };

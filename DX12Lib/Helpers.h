@@ -12,3 +12,11 @@ inline void ThrowIfFailed(HRESULT hr)
 		throw std::exception();
 	}
 }
+
+// Limit an Angle to [0, 360) degrees
+inline float constrainAngle(float x) {
+	x = fmodf(x, 360);
+	if (x < 0)
+		x += 360;
+	return x;
+}

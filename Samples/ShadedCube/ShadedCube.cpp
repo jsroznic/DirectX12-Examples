@@ -222,6 +222,11 @@ bool ShadedCube::LoadContent()
 	auto fenceValue = commandQueue->ExecuteCommandList(commandList);
 	commandQueue->WaitForFenceValue(fenceValue);
 
+	// Initialize Camera Position/Location
+	m_eyePosition = XMVectorSet(0, 0, -10, 1);
+	m_focusPoint = XMVectorSet(0, 0, 0, 1);
+	m_upDirection = XMVectorSet(0, 1, 0, 0);
+
 	m_ContentLoaded = true;
 
 	// Resize/Create the depth buffer.
@@ -310,16 +315,59 @@ void ShadedCube::OnUpdate(UpdateEventArgs& e)
 		totalTime = 0.0;
 	}
 
+	// Update Keyboard Input
+	UpdateKeyPresses();
+
 	// Update the model matrix.
 	float angle = static_cast<float>(e.TotalTime * 90.0);
 	const XMVECTOR rotationAxis = XMVectorSet(0, 1, 1, 0);
 	m_ModelMatrix = XMMatrixRotationAxis(rotationAxis, XMConvertToRadians(angle));
 
 	// Update the view matrix.
-	const XMVECTOR eyePosition = XMVectorSet(0, 0, -10, 1);
-	const XMVECTOR focusPoint = XMVectorSet(0, 0, 0, 1);
-	const XMVECTOR upDirection = XMVectorSet(0, 1, 0, 0);
-	m_ViewMatrix = XMMatrixLookAtLH(eyePosition, focusPoint, upDirection);
+	// HANDLE MOUSE & KEYBOARD INPUT
+
+	float mouseSensitivity = 0.5;
+	float moveSensitivity = 20;
+	float boostMultiplier = 5;
+
+	// Store Mouse Position from Prior Frames
+	static float oldMouseX = 0;
+	static float oldMouseY = 0;
+
+	// Check Left Mouse Button Down
+	if (m_mouseLClick) {
+		m_camRotX += mouseSensitivity *(m_mouseX - oldMouseX);
+		m_camRotX = constrainAngle(m_camRotX);
+		m_camRotY += mouseSensitivity * (oldMouseY - m_mouseY);
+		m_camRotY = clamp(m_camRotY, (float)-89, (float)89);
+	}
+	oldMouseX = m_mouseX;
+	oldMouseY = m_mouseY;
+	XMVECTOR camForward = XMVectorSet(sinf(XMConvertToRadians(m_camRotX)) * cosf(XMConvertToRadians(m_camRotY)), sinf(XMConvertToRadians(m_camRotY)), cosf(XMConvertToRadians(m_camRotX)) * cosf(XMConvertToRadians(m_camRotY)), 1);
+	m_focusPoint = XMVectorAdd(m_eyePosition, camForward);
+	XMVECTOR camRight = XMVector3Cross(m_upDirection, camForward);
+	XMVECTOR camUp = XMVector3Cross(camForward, camRight);
+	camUp = XMVector3Normalize(camUp);
+
+	// Apply Movement
+	// Forward/Backward Movement
+	float moveAmount = (m_movement[0] - m_movement[1]) * moveSensitivity * e.ElapsedTime * (m_boost ? boostMultiplier : 1);
+	m_eyePosition = XMVectorAdd(m_eyePosition, camForward * moveAmount);
+	m_focusPoint = XMVectorAdd(m_focusPoint, camForward * moveAmount);
+
+	// Strafing Movement
+	moveAmount = (m_movement[2] - m_movement[3]) * moveSensitivity * e.ElapsedTime * (m_boost ? boostMultiplier : 1);
+	m_eyePosition = XMVectorAdd(m_eyePosition, camRight * moveAmount);
+	m_focusPoint = XMVectorAdd(m_focusPoint, camRight * moveAmount);
+
+	// Vertical Movement
+	moveAmount = (m_movement[4] - m_movement[5]) * moveSensitivity * e.ElapsedTime * (m_boost ? boostMultiplier : 1);
+	m_eyePosition = XMVectorAdd(m_eyePosition, camUp * moveAmount);
+	m_focusPoint = XMVectorAdd(m_focusPoint, camUp * moveAmount);
+
+	// END MOUSE & KEYBOARD INPUT
+
+	m_ViewMatrix = XMMatrixLookAtLH(m_eyePosition, m_focusPoint, m_upDirection);
 
 	// Update the projection matrix.
 	float aspectRatio = GetClientWidth() / static_cast<float>(GetClientHeight());
@@ -415,6 +463,13 @@ void ShadedCube::OnKeyPressed(KeyEventArgs& e)
 	case KeyCode::Escape:
 		Application::Get().Quit(0);
 		break;
+	case KeyCode::R:
+		m_eyePosition = XMVectorSet(0, 0, -10, 1);
+		m_focusPoint = XMVectorSet(0, 0, 0, 1);
+		m_camRotX = 0;
+		m_camRotY = 0;
+		m_FoV = 45.0;
+		break;
 	case KeyCode::Enter:
 		if (e.Alt)
 		{
@@ -436,4 +491,23 @@ void ShadedCube::OnMouseWheel(MouseWheelEventArgs& e)
 	char buffer[256];
 	sprintf_s(buffer, "FoV: %f\n", m_FoV);
 	OutputDebugStringA(buffer);
+}
+
+void ShadedCube::OnMouseMoved(MouseMotionEventArgs& e)
+{
+	m_mouseX = e.X;
+	m_mouseY = e.Y;
+}
+
+void ShadedCube::UpdateKeyPresses()
+{
+	m_mouseLClick = (GetKeyState(KeyCode::LButton) & 0x80) != 0;
+	m_mouseRClick = (GetKeyState(KeyCode::RButton) & 0x80) != 0;
+	m_movement[0] = (GetKeyState(KeyCode::W) & 0x80) != 0;
+	m_movement[1] = (GetKeyState(KeyCode::S) & 0x80) != 0;
+	m_movement[2] = (GetKeyState(KeyCode::D) & 0x80) != 0;
+	m_movement[3] = (GetKeyState(KeyCode::A) & 0x80) != 0;
+	m_movement[4] = (GetKeyState(KeyCode::Space) & 0x80) != 0;
+	m_movement[5] = (GetKeyState(KeyCode::ControlKey) & 0x80) != 0;
+	m_boost = (GetKeyState(KeyCode::ShiftKey) & 0x80) != 0;
 }
