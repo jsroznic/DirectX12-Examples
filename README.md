@@ -8,14 +8,30 @@ Additional References for these projects include *Introduction to 3D Game Progra
 
 ## Notes for Adding new Projects
 
-1. **Configure Include Path**
+1. **Setup Visual Studio**
+
+     Run the visual studio installer, and ensure that *Game Development with C++* is selected.
+     
+2. **Copy d3dcompiler_47.dll to Output Folder**
+     
+     This DLL is part of the Windows 10 SDK, a copy can be found in C:\Program Files (x86)\Windows Kits\10\Redist\D3D\x64\d3dcompiler_47.dll
+     
+     The output folder for projects is generally the *Debug* folder in the main directory.
+
+3. **Configure Include Path**
 
      Project -> Properties -> VC++ Directories -> Include Directories
   
-     Add the path to the DX12Lib Folder
+     Add the path to the DX12Lib folder and the project's current directory
   
-2. **Add Additional Dependencies**
+4. **Add Additional Dependencies**
 
      Project -> Properties -> Linker -> Input -> Additional Dependencies
   
-     Add D3d12.lib and DXGI.lib
+     Add D3d12.lib, DXGI.lib, D3Dcompiler.lib, shlwapi.lib, dxguid.lib
+     
+5. **Select 64-bit Compilation**
+     
+     Ensure that the target platform is x64 using the selector before building the project to avoid runtime issues with matrix math.
+     
+6. **Repeat Steps 3-5 for each new project**
