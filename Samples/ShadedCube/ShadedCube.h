@@ -52,7 +52,6 @@ protected:
 	 */
 	virtual void UpdateKeyPresses();
 
-
 	virtual void OnResize(ResizeEventArgs& e) override;
 private:
 	// Helper functions

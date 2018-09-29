@@ -4,6 +4,7 @@
 #include <CommandQueue.h>
 #include <Helpers.h>
 #include <Window.h>
+#include <Geometry.h>
 
 #include <wrl.h>
 using namespace Microsoft::WRL;
@@ -29,34 +30,16 @@ constexpr const T& clamp(const T& val, const T& min, const T& max)
 	return val < min ? min : val > max ? max : val;
 }
 
-// Vertex data for a colored cube.
-struct VertexPosColor
-{
-	XMFLOAT3 Position;
-	XMFLOAT3 Color;
+struct Matrices {
+	XMMATRIX MVP;
+	XMMATRIX ModelView;
+	XMMATRIX NormalMat;
+	XMMATRIX ViewMat;
 };
 
-//Define Vertex Position & Color Data for the Cube.
-static VertexPosColor g_Vertices[8] = {
-	{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
-	{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) }, // 1
-	{ XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f) },  // 2
-	{ XMFLOAT3(1.0f, -1.0f, -1.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) },  // 3
-	{ XMFLOAT3(-1.0f, -1.0f,  1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) }, // 4
-	{ XMFLOAT3(-1.0f,  1.0f,  1.0f), XMFLOAT3(0.0f, 1.0f, 1.0f) }, // 5
-	{ XMFLOAT3(1.0f,  1.0f,  1.0f), XMFLOAT3(1.0f, 1.0f, 1.0f) },  // 6
-	{ XMFLOAT3(1.0f, -1.0f,  1.0f), XMFLOAT3(1.0f, 0.0f, 1.0f) }   // 7
-};
-//Define Indicies for Triangles of Cube
-static WORD g_Indicies[36] =
-{
-	0, 1, 2, 0, 2, 3,
-	4, 6, 5, 4, 7, 6,
-	4, 5, 1, 4, 1, 0,
-	3, 2, 6, 3, 6, 7,
-	1, 5, 6, 1, 6, 2,
-	4, 0, 3, 4, 3, 7
-};
+
+// Define CUBE
+Cube* cube;
 
 ShadedCube::ShadedCube(const std::wstring& name, int width, int height, bool vSync)
 	: super(name, width, height, vSync)
@@ -116,27 +99,30 @@ bool ShadedCube::LoadContent()
 	auto commandQueue = Application::Get().GetCommandQueue(D3D12_COMMAND_LIST_TYPE_COPY);
 	auto commandList = commandQueue->GetCommandList();
 
+	//Create a Cube
+	cube = new Cube(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0, 1.0, 1.0));
+
 	// Upload vertex buffer data.
-		ComPtr<ID3D12Resource> intermediateVertexBuffer;
+	ComPtr<ID3D12Resource> intermediateVertexBuffer;
 	UpdateBufferResource(commandList,
 		&m_VertexBuffer, &intermediateVertexBuffer,
-		_countof(g_Vertices), sizeof(VertexPosColor), g_Vertices);
+		cube->vertexCount, sizeof(Geometry::VertexPosColorNorm), cube->GetVertices());
 
 	// Create the vertex buffer view.
 	m_VertexBufferView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
-	m_VertexBufferView.SizeInBytes = sizeof(g_Vertices);
-	m_VertexBufferView.StrideInBytes = sizeof(VertexPosColor);
+	m_VertexBufferView.SizeInBytes = sizeof(Geometry::VertexPosColorNorm) * cube->vertexCount;
+	m_VertexBufferView.StrideInBytes = sizeof(Geometry::VertexPosColorNorm);
 
 	// Upload index buffer data.
 	ComPtr<ID3D12Resource> intermediateIndexBuffer;
 	UpdateBufferResource(commandList,
 		&m_IndexBuffer, &intermediateIndexBuffer,
-		_countof(g_Indicies), sizeof(WORD), g_Indicies);
+		cube->indexCount, sizeof(WORD), cube->GetIndicies());
 
 	// Create index buffer view.
 	m_IndexBufferView.BufferLocation = m_IndexBuffer->GetGPUVirtualAddress();
 	m_IndexBufferView.Format = DXGI_FORMAT_R16_UINT;
-	m_IndexBufferView.SizeInBytes = sizeof(g_Indicies);
+	m_IndexBufferView.SizeInBytes = sizeof(WORD) * cube->indexCount;
 
 	// Create the descriptor heap for the depth-stencil view.
 	D3D12_DESCRIPTOR_HEAP_DESC dsvHeapDesc = {};
@@ -147,16 +133,17 @@ bool ShadedCube::LoadContent()
 
 	// Load the vertex shader.
 	ComPtr<ID3DBlob> vertexShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"VertexShader.cso", &vertexShaderBlob));
+	ThrowIfFailed(D3DReadFileToBlob(L"VertexShader2.cso", &vertexShaderBlob));
 
 	// Load the pixel shader.
 	ComPtr<ID3DBlob> pixelShaderBlob;
-	ThrowIfFailed(D3DReadFileToBlob(L"PixelShader.cso", &pixelShaderBlob));
+	ThrowIfFailed(D3DReadFileToBlob(L"PixelShader2.cso", &pixelShaderBlob));
 
 	// Create the vertex input layout
 	D3D12_INPUT_ELEMENT_DESC inputLayout[] = {
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 		{ "COLOR", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D12_APPEND_ALIGNED_ELEMENT, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	};
 
 	// Create a root signature.
@@ -177,7 +164,7 @@ bool ShadedCube::LoadContent()
 
 	// A single 32-bit constant root parameter that is used by the vertex shader.
 	CD3DX12_ROOT_PARAMETER1 rootParameters[1];
-	rootParameters[0].InitAsConstants(sizeof(XMMATRIX) / 4, 0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
+	rootParameters[0].InitAsConstants(sizeof(XMMATRIX), 0, 0, D3D12_SHADER_VISIBILITY_VERTEX);
 
 	CD3DX12_VERSIONED_ROOT_SIGNATURE_DESC rootSignatureDescription;
 	rootSignatureDescription.Init_1_1(_countof(rootParameters), rootParameters, 0, nullptr, rootSignatureFlags);
@@ -435,11 +422,16 @@ void ShadedCube::OnRender(RenderEventArgs& e)
 	commandList->OMSetRenderTargets(1, &rtv, FALSE, &dsv);
 
 	// Update the MVP matrix
-	XMMATRIX mvpMatrix = XMMatrixMultiply(m_ModelMatrix, m_ViewMatrix);
-	mvpMatrix = XMMatrixMultiply(mvpMatrix, m_ProjectionMatrix);
-	commandList->SetGraphicsRoot32BitConstants(0, sizeof(XMMATRIX) / 4, &mvpMatrix, 0);
+	XMMATRIX modelView = XMMatrixMultiply(m_ModelMatrix, m_ViewMatrix);
+	// Calculate Normal Matrix
+	XMMATRIX normalMat = XMMatrixTranspose(XMMatrixInverse(nullptr, modelView));
+	XMMATRIX mvpMatrix = XMMatrixMultiply(modelView, m_ProjectionMatrix);
+
+	Matrices mat = { mvpMatrix, modelView, normalMat, m_ViewMatrix };
+
+	commandList->SetGraphicsRoot32BitConstants(0, sizeof(XMMATRIX), &mat, 0);
 	// Draw the Geometry!
-	commandList->DrawIndexedInstanced(_countof(g_Indicies), 1, 0, 0, 0);
+	commandList->DrawIndexedInstanced(cube->indexCount, 1, 0, 0, 0);
 
 	// Present rendered image to screen
 	{

@@ -30,14 +30,14 @@ constexpr const T& clamp(const T& val, const T& min, const T& max)
 }
 
 // Vertex data for a colored cube.
-struct VertexPosColor
+struct VertexPosColorNorm
 {
 	XMFLOAT3 Position;
 	XMFLOAT3 Color;
 };
 
 //Define Vertex Position & Color Data for the Cube.
-static VertexPosColor g_Vertices[8] = {
+static VertexPosColorNorm g_Vertices[8] = {
 	{ XMFLOAT3(-1.0f, -1.0f, -1.0f), XMFLOAT3(0.0f, 0.0f, 0.0f) }, // 0
 	{ XMFLOAT3(-1.0f,  1.0f, -1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) }, // 1
 	{ XMFLOAT3(1.0f,  1.0f, -1.0f), XMFLOAT3(1.0f, 1.0f, 0.0f) },  // 2
@@ -120,12 +120,12 @@ bool Cube::LoadContent()
 		ComPtr<ID3D12Resource> intermediateVertexBuffer;
 	UpdateBufferResource(commandList,
 		&m_VertexBuffer, &intermediateVertexBuffer,
-		_countof(g_Vertices), sizeof(VertexPosColor), g_Vertices);
+		_countof(g_Vertices), sizeof(VertexPosColorNorm), g_Vertices);
 
 	// Create the vertex buffer view.
 	m_VertexBufferView.BufferLocation = m_VertexBuffer->GetGPUVirtualAddress();
 	m_VertexBufferView.SizeInBytes = sizeof(g_Vertices);
-	m_VertexBufferView.StrideInBytes = sizeof(VertexPosColor);
+	m_VertexBufferView.StrideInBytes = sizeof(VertexPosColorNorm);
 
 	// Upload index buffer data.
 	ComPtr<ID3D12Resource> intermediateIndexBuffer;
