@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Cube", "Samples\Cube\Cube.v
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShadedCube", "Samples\ShadedCube\ShadedCube.vcxproj", "{BB64E0BC-8DCC-41D2-91C4-A6E82E4007FF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RasterScene", "Samples\RasterScene\RasterScene.vcxproj", "{0344C8BC-AA90-4ADB-98F6-AD643733C680}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{BB64E0BC-8DCC-41D2-91C4-A6E82E4007FF}.Release|x64.Build.0 = Release|x64
 		{BB64E0BC-8DCC-41D2-91C4-A6E82E4007FF}.Release|x86.ActiveCfg = Release|Win32
 		{BB64E0BC-8DCC-41D2-91C4-A6E82E4007FF}.Release|x86.Build.0 = Release|Win32
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Debug|x64.ActiveCfg = Debug|x64
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Debug|x64.Build.0 = Debug|x64
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Debug|x86.ActiveCfg = Debug|Win32
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Debug|x86.Build.0 = Debug|Win32
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Release|x64.ActiveCfg = Release|x64
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Release|x64.Build.0 = Release|x64
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Release|x86.ActiveCfg = Release|Win32
+		{0344C8BC-AA90-4ADB-98F6-AD643733C680}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -65,3 +65,35 @@ Geometry::VertexPosColorNorm* Cube::GetVertices() {
 WORD* Cube::GetIndicies() {
 	return indicies;
 }
+
+
+SceneEnvironment::SceneEnvironment(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size) {
+	// Initialize Vertices - Back
+	vertices[0] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
+	vertices[1] = { XMFLOAT3(8.0f, -2.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
+	vertices[2] = { XMFLOAT3(8.0f, 10.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
+	vertices[3] = { XMFLOAT3(-8.0f, 10.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
+
+	// Floor
+	vertices[4] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) };
+	vertices[5] = { XMFLOAT3(8.0f, -2.0f, -20.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) };
+	vertices[6] = { XMFLOAT3(8.0f, -2.0f, -10.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) };
+	vertices[7] = { XMFLOAT3(-8.0f, -2.0f, -10.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) };
+
+	// Side
+	vertices[8] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) };
+	vertices[9] = { XMFLOAT3(-8.0f, -2.0f, -10.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) };
+	vertices[10] = { XMFLOAT3(-8.0f, 10.0f, -20.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) };
+	
+
+	vertexCount = 11;
+	indexCount = 15;
+}
+
+Geometry::VertexPosColorNorm* SceneEnvironment::GetVertices() {
+	return vertices;
+}
+
+WORD* SceneEnvironment::GetIndicies() {
+	return indicies;
+}
