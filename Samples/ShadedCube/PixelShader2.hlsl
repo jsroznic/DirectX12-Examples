@@ -55,5 +55,5 @@ float4 main(PixelShaderInput IN) : SV_Target
 	// Color the Cube Red
 	color = float4(1.0, 0.0, 0.0, 1.0f);
 
-	return (specular + (diffuse / 2 + .5))*color;
+	return (specular + diffuse)*color;
 }

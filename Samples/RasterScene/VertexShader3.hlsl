@@ -3,7 +3,6 @@ struct RootParams
 	matrix MVP;
 	matrix ModelView;
 	matrix NormalMat;
-	matrix ViewMat;
 };
 
 ConstantBuffer<RootParams> ModelViewProjectionCB : register(b0);

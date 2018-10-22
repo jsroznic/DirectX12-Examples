@@ -21,6 +21,7 @@ using namespace Microsoft::WRL;
 #if defined(max)
 #undef max
 #endif
+#define PI 3.14159265
 
 // Define To swap rendered geometry to Cube for easier debugging
 //#define CUBE
@@ -38,18 +39,28 @@ struct RootParameters {
 	XMMATRIX MVP;
 	XMMATRIX ModelView;
 	XMMATRIX NormalMat;
-	XMMATRIX ViewMat;
 };
 
 struct LightParams {
 	float LightPosView[4];
+	float SpecularColor[4];
+	float AmbientColor[4];
+	float SpecularPower;
+	bool TrueDiffuse;
 };
+
+float defaultFOV = 62;
+bool dynamicLighting = false;
 
 // Define Object to be drawn
 #if defined(CUBE)
 Cube* environment;
 #else
-SceneEnvironment* environment;
+SceneEnvironment* scene;
+Sphere* sphere1;
+Sphere* sphere2;
+Sphere* sphere3;
+CombinedGeometry* environment;
 #endif
 
 // Define Light Source
@@ -74,6 +85,14 @@ void RasterScene::UpdateBufferResource(
 	auto device = Application::Get().GetDevice();
 
 	size_t bufferSize = numElements * elementSize;
+
+	char buffer[256];
+	sprintf_s(buffer, "******** numElements: %d\n", numElements);
+	OutputDebugStringA(buffer);
+	sprintf_s(buffer, "******** elementSize: %d\n", elementSize);
+	OutputDebugStringA(buffer);
+	sprintf_s(buffer, "******** bufferSize: %d\n", bufferSize);
+	OutputDebugStringA(buffer);
 
 	// Create a committed resource for the GPU resource in a default heap.
 	ThrowIfFailed(device->CreateCommittedResource(
@@ -118,8 +137,21 @@ bool RasterScene::LoadContent()
 #if defined(CUBE)
 	environment = new Cube(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0, 1.0, 1.0));
 #else
-	environment = new SceneEnvironment(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0, 1.0, 1.0));
+	//Individual Objects
+	scene = new SceneEnvironment(XMFLOAT3(0.0, 0.0, 0.0), XMFLOAT3(1.0, 1.0, 1.0));
+	sphere1 = new Sphere(XMFLOAT3(0.0, 0.0, -16.0), 4, XMFLOAT4(1.0, 1.0, 1.0, 1.0));
+	sphere2 = new Sphere(XMFLOAT3(-3.0, -1.0, -14.0), 2, XMFLOAT4(1.0, 1.0, 1.0, 1.0));
+	sphere3 = new Sphere(XMFLOAT3(3.0, -1.0, -14.0), 2, XMFLOAT4(1.0, 0.0, 0.0, 1.0));
+
+	//Comnbined Object
+	environment = new CombinedGeometry();
+	environment->AddGeometry(scene);
+	environment->AddGeometry(sphere1);
+	environment->AddGeometry(sphere2);
+	environment->AddGeometry(sphere3);
 #endif
+
+	m_FoV = defaultFOV;
 
 	// Upload vertex buffer data.
 	ComPtr<ID3D12Resource> intermediateVertexBuffer;
@@ -238,7 +270,7 @@ bool RasterScene::LoadContent()
 	m_camRotX = 0;
 #else
 	m_eyePosition = XMVectorSet(0, 0, 0, 1);
-	m_focusPoint = XMVectorSet(0, 0, -10, 1);
+	m_focusPoint = XMVectorSet(0, 0, -1, 1);
 	m_upDirection = XMVectorSet(0, 1, 0, 0);
 	m_camRotX = 180;
 #endif
@@ -342,8 +374,11 @@ void RasterScene::OnUpdate(UpdateEventArgs& e)
 
 	static float timeCounter = 0;
 	timeCounter += e.ElapsedTime;
-	lightSource.x = 10 * cos(timeCounter);
-	lightSource.z = 10 * sin(timeCounter);
+	lightSource.x = 20 * cos(timeCounter);
+	lightSource.z = 20 * sin(timeCounter);
+	if (!dynamicLighting) {
+		lightSource = XMFLOAT4(-3.0, 5.0, -15.0, 1.0);
+	}
 
 	// Update the view matrix.
 	// HANDLE MOUSE & KEYBOARD INPUT
@@ -438,7 +473,7 @@ void RasterScene::OnRender(RenderEventArgs& e)
 		TransitionResource(commandList, backBuffer,
 			D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-		FLOAT clearColor[] = { 0.2f, 0.2f, 0.2f, 1.0f }; // Set Clear Color to Grey
+		FLOAT clearColor[] = { 0.0f, 0.0f, 0.0f, 1.0f }; // Set Clear Color to Black
 
 		ClearRTV(commandList, rtv, clearColor);
 		ClearDepth(commandList, dsv);
@@ -464,10 +499,10 @@ void RasterScene::OnRender(RenderEventArgs& e)
 
 	//Multiply the Light Position by the View Matrix
 	XMVECTOR lightPosition = XMVectorSet(lightSource.x, lightSource.y, lightSource.z, lightSource.w);
-	//lightPosition = XMVector4Transform(lightPosition, m_ViewMatrix);
+	lightPosition = XMVector4Transform(lightPosition, m_ViewMatrix);
 	
 
-	RootParameters rootParams = { mvpMatrix, modelView, normalMat, m_ViewMatrix };
+	RootParameters rootParams = { mvpMatrix, modelView, normalMat };
 
 	// Send Root Parameter 1 (Matrices) to the Command List
 	// Constant buffers must be 256-byte aligned.
@@ -476,7 +511,25 @@ void RasterScene::OnRender(RenderEventArgs& e)
 
 	commandList->SetGraphicsRootConstantBufferView(0, heapAllocation.GPU);
 
-	LightParams lightParams = { {XMVectorGetX(lightPosition), XMVectorGetY(lightPosition), XMVectorGetZ(lightPosition), XMVectorGetW(lightPosition)} };
+	LightParams lightParams;
+	if (dynamicLighting) { //Dynamic Lighting
+		lightParams = {
+			{XMVectorGetX(lightPosition), XMVectorGetY(lightPosition), XMVectorGetZ(lightPosition), XMVectorGetW(lightPosition)}, // Light Position (View Coordinates)
+			{0.5, 0.5, 0.5, 1},                                                                                                   // Specular Color
+			{0.1, 0.08, 0.0, 1},                                                                                                  // Ambient Color
+			10.0,                                                                                                                 // Specular Power
+			true                                                                                                                  // True Diffuse (Allow darker diffuse shading)
+		};
+	}
+	else { //Static Lighting
+		lightParams = {
+			{XMVectorGetX(lightPosition), XMVectorGetY(lightPosition), XMVectorGetZ(lightPosition), XMVectorGetW(lightPosition)}, // Light Position (View Coordinates)
+			{0.0, 0.0, 0.0, 1},                                                                                                   // Specular Color
+			{0.0, 0.0, 0.0, 1},                                                                                                   // Ambient Color
+			10.0,                                                                                                                 // Specular Power
+			false                                                                                                                 // True Diffuse (Allow darker diffuse shading)
+		};
+	}
 
 	// Send Root Parameter 2 (Light Information) to the Command List
 	auto heapAllocation2 = m_UploadBuffer->Allocate(sizeof(LightParams), D3D12_CONSTANT_BUFFER_DATA_PLACEMENT_ALIGNMENT);
@@ -522,7 +575,7 @@ void RasterScene::OnKeyPressed(KeyEventArgs& e)
 		m_camRotX = 180;
 #endif
 		m_camRotY = 0;
-		m_FoV = 45.0;
+		m_FoV = defaultFOV;
 		break;
 	case KeyCode::Enter:
 		if (e.Alt)
@@ -534,6 +587,8 @@ void RasterScene::OnKeyPressed(KeyEventArgs& e)
 	case KeyCode::V:
 		m_pWindow->ToggleVSync();
 		break;
+	case KeyCode::L:
+		dynamicLighting = !dynamicLighting;
 	}
 }
 

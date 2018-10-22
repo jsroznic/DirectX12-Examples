@@ -1,4 +1,5 @@
 #include <Geometry.h>
+#include <stdio.h>  
 
 using namespace DirectX;
 
@@ -69,10 +70,10 @@ WORD* Cube::GetIndicies() {
 
 SceneEnvironment::SceneEnvironment(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3 size) {
 	// Initialize Vertices - Back
-	vertices[0] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
-	vertices[1] = { XMFLOAT3(8.0f, -2.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
-	vertices[2] = { XMFLOAT3(8.0f, 10.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
-	vertices[3] = { XMFLOAT3(-8.0f, 10.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, -1.0f) };
+	vertices[0] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) };
+	vertices[1] = { XMFLOAT3(8.0f, -2.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) };
+	vertices[2] = { XMFLOAT3(8.0f, 10.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) };
+	vertices[3] = { XMFLOAT3(-8.0f, 10.0f, -20.0f), XMFLOAT3(0.0f, 0.0f, 1.0f), XMFLOAT3(0.0f, 0.0f, 1.0f) };
 
 	// Floor
 	vertices[4] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) };
@@ -81,9 +82,9 @@ SceneEnvironment::SceneEnvironment(DirectX::XMFLOAT3 position, DirectX::XMFLOAT3
 	vertices[7] = { XMFLOAT3(-8.0f, -2.0f, -10.0f), XMFLOAT3(1.0f, 1.0f, 1.0f), XMFLOAT3(0.0f, 1.0f, 0.0f) };
 
 	// Side
-	vertices[8] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) };
-	vertices[9] = { XMFLOAT3(-8.0f, -2.0f, -10.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) };
-	vertices[10] = { XMFLOAT3(-8.0f, 10.0f, -20.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(-1.0f, 0.0f, 0.0f) };
+	vertices[8] = { XMFLOAT3(-8.0f, -2.0f, -20.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) };
+	vertices[9] = { XMFLOAT3(-8.0f, -2.0f, -10.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) };
+	vertices[10] = { XMFLOAT3(-8.0f, 10.0f, -20.0f), XMFLOAT3(1.0f, 0.0f, 0.0f), XMFLOAT3(1.0f, 0.0f, 0.0f) };
 	
 
 	vertexCount = 11;
@@ -96,4 +97,129 @@ Geometry::VertexPosColorNorm* SceneEnvironment::GetVertices() {
 
 WORD* SceneEnvironment::GetIndicies() {
 	return indicies;
+}
+
+
+Sphere::Sphere(DirectX::XMFLOAT3 position, float scale, DirectX::XMFLOAT4 color) {
+
+	XMFLOAT3 rgbColor = XMFLOAT3(color.x, color.y, color.z);
+	size_t verticalSegments = 20;
+	if (verticalSegments < 3)
+		verticalSegments = 3;
+
+	float radius = scale / 2.0;
+	size_t horizontalSegments = verticalSegments * 2;
+	vertexCount = 0;
+	indexCount = 0;
+
+	// Create rings of vertices at progressively higher latitudes.
+	for (size_t i = 0; i <= verticalSegments; i++)
+	{
+
+		float latitude = (i * XM_PI / verticalSegments) - XM_PIDIV2;
+		float dy, dxz;
+
+		XMScalarSinCos(&dy, &dxz, latitude);
+
+		// Create a single ring of vertices at this latitude.
+		for (size_t j = 0; j <= horizontalSegments; j++)
+		{
+
+			float longitude = j * XM_2PI / horizontalSegments;
+			float dx, dz;
+
+			XMScalarSinCos(&dx, &dz, longitude);
+
+			dx *= dxz;
+			dz *= dxz;
+
+			XMFLOAT3 norm = XMFLOAT3(dx, dy, dz);
+			XMVECTOR normal = XMVectorSet(dx, dy, dz, 0);
+
+			vertices[vertexCount++] = { XMFLOAT3(norm.x*radius + position.x, norm.y*radius + position.y, norm.z*radius + position.z), rgbColor, norm };
+		}
+	}
+
+	// Fill the index buffer with triangles joining each pair of latitude rings.
+	size_t stride = horizontalSegments + 1;
+
+	for (size_t i = 0; i < verticalSegments; i++)
+	{
+		for (size_t j = 0; j <= horizontalSegments; j++)
+		{
+			size_t nextI = i + 1;
+			size_t nextJ = (j + 1) % stride;
+
+			indicies[indexCount++] = i * stride + j;
+			indicies[indexCount++] = nextI * stride + j;
+			indicies[indexCount++] = i * stride + nextJ;
+
+			indicies[indexCount++] = i * stride + nextJ;
+			indicies[indexCount++] = nextI * stride + j;
+			indicies[indexCount++] = nextI * stride + nextJ;
+		}
+	}
+
+	char buffer[256];
+	sprintf_s(buffer, "******** Indicies: %d\n",indexCount);
+	OutputDebugStringA(buffer);
+	sprintf_s(buffer, "******** Verts: %d\n", vertexCount);
+	OutputDebugStringA(buffer);
+
+}
+
+Geometry::VertexPosColorNorm* Sphere::GetVertices() {
+	return vertices;
+}
+
+WORD* Sphere::GetIndicies() {
+	return indicies;
+}
+
+
+CombinedGeometry::CombinedGeometry() {
+	vertexCount = 0;
+	indexCount = 0;
+}
+
+CombinedGeometry::~CombinedGeometry()
+{
+	if (vertexCount > 0)
+		free(vertices);
+	if (indexCount > 0)
+		free(indicies);
+}
+
+Geometry::VertexPosColorNorm* CombinedGeometry::GetVertices() {
+	return vertices;
+}
+
+WORD* CombinedGeometry::GetIndicies() {
+	return indicies;
+}
+
+void CombinedGeometry::AddGeometry(Geometry * geom) {
+	// Add Vertices
+	if (vertexCount == 0) {
+		vertices = (VertexPosColorNorm *)malloc(sizeof(VertexPosColorNorm) * geom->vertexCount);
+	}
+	else {
+		vertices = (VertexPosColorNorm *)realloc(vertices, sizeof(VertexPosColorNorm) * (vertexCount + geom->vertexCount));
+	}
+	for (int i = 0; i < geom->vertexCount; i++) {
+		vertices[i + vertexCount] = geom->GetVertices()[i];
+	}
+	
+	// Add Indices
+	if (indexCount == 0) {
+		indicies = (WORD *)malloc(sizeof(WORD) * geom->indexCount);
+	}
+	else {
+		indicies = (WORD *)realloc(indicies, sizeof(WORD) * (indexCount + geom->indexCount));
+	}
+	for (int i = 0; i < geom->indexCount; i++) {
+		indicies[i + indexCount] = geom->GetIndicies()[i] + vertexCount;
+	}
+	vertexCount += geom->vertexCount;
+	indexCount += geom->indexCount;
 }

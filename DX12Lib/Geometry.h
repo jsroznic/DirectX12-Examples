@@ -20,8 +20,8 @@ public:
 		DirectX::XMFLOAT3 Normal;
 	};
 
-	int vertexCount;
-	int indexCount;
+	size_t vertexCount;
+	size_t indexCount;
 
 	virtual VertexPosColorNorm* GetVertices();
 	virtual WORD* GetIndicies();
@@ -75,3 +75,37 @@ private:
 	};
 };
 
+class Sphere : public Geometry
+{
+public:
+	Sphere(DirectX::XMFLOAT3 position, float scale, DirectX::XMFLOAT4 color);
+
+	virtual VertexPosColorNorm* GetVertices() override;
+	virtual WORD* GetIndicies() override;
+
+private:
+	//Define Vertex Position & Color Data for the Sphere.
+	VertexPosColorNorm vertices[(20 + 1) * (20 * 2 +1)];
+
+	//Define Indicies for Triangles of Sphere
+	WORD indicies[20 * (20 * 2 + 1) * 6];
+};
+
+class CombinedGeometry : public Geometry
+{
+public:
+	CombinedGeometry();
+	~CombinedGeometry();
+
+	virtual VertexPosColorNorm* GetVertices() override;
+	virtual WORD* GetIndicies() override;
+
+	virtual void AddGeometry(Geometry * geom);
+
+private:
+	//Define Vertex Position & Color Data for the Cube.
+	VertexPosColorNorm* vertices;
+
+	//Define Indicies for Triangles of Cube
+	WORD* indicies;
+};
