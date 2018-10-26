@@ -4,7 +4,7 @@ struct LightParams
 	float4 SpecularColor;
 	float4 AmbientColor;
 	float SpecularPower;
-	bool TrueDiffuse;
+	int DiffuseShadingMode;
 };
 
 ConstantBuffer<LightParams> Lighting : register(b0, space1);;
@@ -18,7 +18,7 @@ struct PixelShaderInput
 
 /** Calculate diffuse shading. Normal and light direction do not need
  * to be normalized. */
-float diffuseScalar(float3 normal, float3 lightDir, bool frontBackSame, bool trueDiffuse)
+float diffuseScalar(float3 normal, float3 lightDir, bool frontBackSame, int shadingMode)
 {
 	/* Basic equation for diffuse shading */
 	float diffuse = dot(normalize(lightDir), normalize(normal));
@@ -36,8 +36,18 @@ float diffuseScalar(float3 normal, float3 lightDir, bool frontBackSame, bool tru
 	/* Keep diffuse value in range from .5 to 1 to prevent any object
 	 * from appearing too dark. Not technically part of diffuse
 	 * shading---however, you may like the appearance of this. */
-	if(!trueDiffuse)
+	switch (shadingMode) {
+	case 0: // Leave Diffuse Shading as absolute value (0 - 1)
+		break;
+	case 1: // Clamp Diffuse Shading to reduced range (0.2 - 1)
+		diffuse = diffuse < 0.2 ? 0.2 : diffuse;
+		break;
+	case 2: // Scale Diffuse Shading from 0.5 - 1
 		diffuse = diffuse / 2 + .5;
+		break;
+	default:
+		break;
+	}
 
 	return diffuse;
 }
@@ -62,7 +72,7 @@ float4 main(PixelShaderInput IN) : SV_Target
 
 	float3 lightDir = Lighting.LightPosView.xyz - IN.VertexPos.xyz;
 	//lightDir = -IN.VertexPos.xyz; // OVERRIDE Light Position to Camera Position
-	float diffuse = diffuseScalar(IN.Normal, lightDir, false, Lighting.TrueDiffuse);
+	float diffuse = diffuseScalar(IN.Normal, lightDir, false, Lighting.DiffuseShadingMode);
 	float specular = specularScalar(IN.Normal, lightDir, - IN.VertexPos.xyz, Lighting.SpecularPower);
 
 	// Phong Shading Model

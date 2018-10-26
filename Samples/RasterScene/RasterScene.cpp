@@ -46,7 +46,7 @@ struct LightParams {
 	float SpecularColor[4];
 	float AmbientColor[4];
 	float SpecularPower;
-	bool TrueDiffuse;
+	int DiffuseShadingMode;
 };
 
 float defaultFOV = 62;
@@ -518,7 +518,7 @@ void RasterScene::OnRender(RenderEventArgs& e)
 			{0.5, 0.5, 0.5, 1},                                                                                                   // Specular Color
 			{0.1, 0.08, 0.0, 1},                                                                                                  // Ambient Color
 			10.0,                                                                                                                 // Specular Power
-			true                                                                                                                  // True Diffuse (Allow darker diffuse shading)
+			0                                                                                                                     // True Diffuse (Allow darker diffuse shading)
 		};
 	}
 	else { //Static Lighting
@@ -527,7 +527,7 @@ void RasterScene::OnRender(RenderEventArgs& e)
 			{0.0, 0.0, 0.0, 1},                                                                                                   // Specular Color
 			{0.0, 0.0, 0.0, 1},                                                                                                   // Ambient Color
 			10.0,                                                                                                                 // Specular Power
-			false                                                                                                                 // True Diffuse (Allow darker diffuse shading)
+			1                                                                                                                     // Clamped Diffuse  >= 0.2
 		};
 	}
 
@@ -551,6 +551,9 @@ void RasterScene::OnRender(RenderEventArgs& e)
 
 		commandQueue->WaitForFenceValue(m_FenceValues[currentBackBufferIndex]);
 	}
+
+	// Reset Upload Buffer When Command List is finished Executing on the Command Queue
+	m_UploadBuffer->Reset();
 }
 
 void RasterScene::OnKeyPressed(KeyEventArgs& e)
